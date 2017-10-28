@@ -14,21 +14,26 @@
     die('Config file not found.');
   }
 
-  $db = new PDO('mysql:host=' . $appcfg['MYSQL_DATABASE_HOST'] . ';dbname=' . $appcfg['MYSQL_DATABASE_NAME'] . ';charset=utf8',
-    $appcfg['MYSQL_DATABASE_USER'], $appcfg['MYSQL_DATABASE_PASSWORD']);
-  $stmt = $db->prepare("SELECT * FROM visitors WHERE username=?");
-  $stmt->execute(array($visitor));
-  $visits = 0;
-  if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-    $visits = $row['visits'];
-    $stmt = $db->prepare("UPDATE visitors SET visits = visits + 1 WHERE username = ?");
+  echo 'My Config is mysql:host=' . $appcfg['MYSQL_DATABASE_HOST'] . ';dbname=' . $appcfg['MYSQL_DATABASE_NAME'] . ' and ' . $appcfg['MYSQL_DATABASE_USER'];
+  try {
+    $db = new PDO('mysql:host=' . $appcfg['MYSQL_DATABASE_HOST'] . ';dbname=' . $appcfg['MYSQL_DATABASE_NAME'] . ';charset=utf8',
+      $appcfg['MYSQL_DATABASE_USER'], $appcfg['MYSQL_DATABASE_PASSWORD']);
+    $stmt = $db->prepare("SELECT * FROM visitors WHERE username=?");
     $stmt->execute(array($visitor));
-  } else {
-    $stmt = $db->prepare("INSERT INTO visitors VALUES (?,?)");
-    $stmt->execute(array($visitor,1));
-    $visits = 1;
-  }
+    $visits = 0;
+    if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+      $visits = $row['visits'];
+      $stmt = $db->prepare("UPDATE visitors SET visits = visits + 1 WHERE username = ?");
+      $stmt->execute(array($visitor));
+    } else {
+      $stmt = $db->prepare("INSERT INTO visitors VALUES (?,?)");
+      $stmt->execute(array($visitor,1));
+      $visits = 1;
+    }
   echo "Hey there $visitor you've visited $visits times.";
+  } catch (PDOException $e) {
+    die(json_encode(array('outcome' => false, 'message' => 'unable to connect')));
+  }
 ?>
 </body>
 </html>
