@@ -14,7 +14,6 @@
     die('Config file not found.');
   }
 
-  echo 'My Config is mysql:host=' . $appcfg['MYSQL_DATABASE_HOST'] . ';dbname=' . $appcfg['MYSQL_DATABASE_NAME'] . ' and ' . $appcfg['MYSQL_DATABASE_USER'];
   try {
     $db = new PDO('mysql:host=' . $appcfg['MYSQL_DATABASE_HOST'] . ';dbname=' . $appcfg['MYSQL_DATABASE_NAME'] . ';charset=utf8',
       $appcfg['MYSQL_DATABASE_USER'], $appcfg['MYSQL_DATABASE_PASSWORD']);
@@ -30,7 +29,7 @@
       $stmt->execute(array($visitor,1));
       $visits = 1;
     }
-  echo "Hey there $visitor you've visited $visits times.";
+    echo "Hey there $visitor you've visited $visits times.";
   } catch (PDOException $e) {
     die(json_encode(array('outcome' => false, 'message' => 'unable to connect')));
   }
