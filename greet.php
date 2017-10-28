@@ -24,7 +24,7 @@
     $stmt = $db->prepare("UPDATE visitors SET visits = visits + 1 WHERE username = ?");
     $stmt->execute(array($visitor));
   } else {
-    $stmt = $db->prepare("INSERT INTO visitors VLAUES (?,?)");
+    $stmt = $db->prepare("INSERT INTO visitors VALUES (?,?)");
     $stmt->execute(array($visitor,1));
     $visits = 1;
   }
